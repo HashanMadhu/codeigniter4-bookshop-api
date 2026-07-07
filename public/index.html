@@ -78,7 +78,7 @@
           type="number"
           step="0.01"
           id="price"
-          placeholder="Price ($)"
+          placeholder="Price (LKR)"
           required
         />
         <input
@@ -100,6 +100,7 @@
             <th>Author</th>
             <th>Price</th>
             <th>Stock</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody id="booksTableBody">
@@ -122,18 +123,39 @@
 
           books.forEach((book) => {
             const row = `
-                    <tr>
-                        <td>${book.id}</td>
-                        <td>${book.title}</td>
-                        <td>${book.author}</td>
-                        <td>$${parseFloat(book.price).toFixed(2)}</td>
-                        <td>${book.stock_count}</td>
-                    </tr>
-                `;
+                      <tr>
+                          <td>${book.id}</td>
+                          <td>${book.title}</td>
+                          <td>${book.author}</td>
+                          <td>LKR ${parseFloat(book.price).toFixed(2)}</td>
+                          <td>${book.stock_count}</td>
+                          <td>
+                              <button onclick="deleteBook(${book.id})">Delete</button>
+                      </tr>
+                  `;
             tableBody.insertAdjacentHTML("beforeend", row);
           });
         } catch (error) {
           console.error("Error loading inventory data:", error);
+        }
+      }
+      // Action C: Send a DELETE request to our backend API
+      async function deleteBook(id) {
+        if (!confirm("Are you sure you want to delete this book?")) return;
+
+        try {
+          const response = await fetch(`${API_URL}/${id}`, {
+            method: "DELETE",
+          });
+
+          if (response.ok) {
+            alert("Book removed from inventory successfully.");
+            loadBooks(); // Instantly refresh the visual table checklist
+          } else {
+            alert("Failed to delete the book.");
+          }
+        } catch (error) {
+          console.error("Deletion error:", error);
         }
       }
 

@@ -43,4 +43,29 @@ class BookController extends BaseController
         // If something goes wrong, send back an error message
         return $this->fail('Failed to save the book data.', 400);
     }
+/////////////////////////////////////////////////////////////
+    // Action 3: Delete a book by its ID
+    public function delete($id=null)
+    {
+        $model = new BookModel();
+
+        //Check entered id is exits or not
+        if(!$model->find($id)){
+            return $this->failNotFound('Book not found with ID: ' . $id);
+        }
+
+        // Attempt to delete the book by its ID
+        if($model->delete($id)){
+            return $this->respond([
+                'status' => 200,
+                'message' => $id . 'Book deleted Successfully!'
+            ],200);
+        }
+        return $this->fail('Failed to delete the book.', 400);
+    }
+
+/////////////////////////////////////////////////////////////
+
+
 }
+
